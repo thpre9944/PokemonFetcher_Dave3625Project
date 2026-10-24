@@ -17,23 +17,39 @@
 
     <p id="message" role="status" aria-live="polite"></p>
 
+    <div class="favorites hidden" id="favorites" aria-label="Favorites"></div>
+
     <div class="container hidden">
         <div class="card" id="card">
-            <div class="card-img">
-                <img src="" alt="" id="pokeimg">
-            </div>
-            <div class="card-body">
-                <h1 class="card-title" id="name"></h1>
-                <p class="card-number" id="number"></p>
-                <div class="types" id="types"></div>
-                <p class="card-text" id="weight"></p>
-                <p class="card-text" id="height"></p>
-                <p class="card-text" id="exp"></p>
-                <div class="stats" id="stats"></div>
-                <div class="browse">
-                    <button type="button" id="prevButton">Previous</button>
-                    <button type="button" id="nextButton">Next</button>
+            <div class="hero">
+                <div class="hero-head">
+                    <button type="button" class="star" id="favButton" aria-pressed="false" aria-label="Add to favorites">☆</button>
+                    <h1 class="card-title" id="name"></h1>
+                    <p class="card-number" id="number"></p>
                 </div>
+                <div class="card-img">
+                    <img src="" alt="" id="pokeimg">
+                </div>
+                <div class="types" id="types"></div>
+                <div class="sprite-controls">
+                    <button type="button" class="secondary" id="prevButton">Previous</button>
+                    <button type="button" class="secondary" id="shinyButton" aria-pressed="false">Shiny</button>
+                    <button type="button" class="secondary" id="pixelButton" aria-pressed="false">Pixel art</button>
+                    <button type="button" class="secondary" id="backButton" aria-pressed="false">Back view</button>
+                    <button type="button" class="secondary" id="cryButton">Play cry</button>
+                    <button type="button" class="secondary" id="nextButton">Next</button>
+                </div>
+            </div>
+            <div class="details">
+                <div class="info">
+                    <p class="entry" id="entry"></p>
+                    <p class="card-text" id="weight"></p>
+                    <p class="card-text" id="height"></p>
+                    <p class="card-text" id="exp"></p>
+                    <p class="card-text" id="abilities"></p>
+                </div>
+                <div class="stats" id="stats"></div>
+                <div class="matchups" id="matchups"></div>
             </div>
         </div>
     </div>

@@ -12,6 +12,13 @@ const nextButton = document.getElementById('nextButton');
 const cache = new Map();   // remembers lookups so repeat searches are instant
 let latestRequest = 0;     // guards against slow responses overwriting newer ones
 let currentId = null;
+let currentData = null;
+let shiny = false;
+let back = false;
+let pixel = false;
+const shinyButton = document.getElementById('shinyButton');
+const backButton = document.getElementById('backButton');
+const pixelButton = document.getElementById('pixelButton');
 
 const TYPE_COLORS = {
     normal: '#a8a77a', fire: '#ee8130', water: '#6390f0', electric: '#f7d02c',
@@ -77,20 +84,26 @@ async function lookup(query) {
 function render(data) {
     currentId = data.id;
 
-    const artwork = data.sprites.other['official-artwork'].front_default || data.sprites.front_default;
-    img.src = artwork;
-    img.alt = data.name;
+    currentData = data;
+    showSprite();
+    updateStar();
 
     document.getElementById('name').textContent = data.name;
     document.getElementById('number').textContent = '#' + String(data.id).padStart(3, '0');
     document.getElementById('weight').textContent = `Weight: ${data.weight / 10} kg`;
     document.getElementById('height').textContent = `Height: ${data.height / 10} m`;
     document.getElementById('exp').textContent = `Experience: ${data.base_experience ?? 'unknown'}`;
+    document.getElementById('abilities').textContent =
+        'Abilities: ' + data.abilities.map(a => a.ability.name.replace(/-/g, ' ')).join(', ');
+    renderEntry(data.id);
 
     const types = data.types.map(t => t.type.name);
-    card.style.setProperty('--accent', TYPE_COLORS[types[0]] || '#888');
+    document.body.style.setProperty('--accent', TYPE_COLORS[types[0]] || '#888');
+    document.body.classList.add('has-type');
     renderTypes(types);
     renderStats(data.stats);
+    renderMatchups(types, data.id);
+    input.value = data.name;
     setBackground();
 
     prevButton.disabled = currentId <= 1;
@@ -123,15 +136,186 @@ function renderStats(stats) {
     }));
 }
 
+const typeCache = new Map(); // damage relations per type, fetched once
+
+async function getTypeRelations(type) {
+    if (!typeCache.has(type)) {
+        const response = await fetch(`${API}/type/${type}`);
+        if (!response.ok) throw new Error('Could not load type data');
+        typeCache.set(type, (await response.json()).damage_relations);
+    }
+    return typeCache.get(type);
+}
+
+// Start every attacking type at x1, then multiply for each defending type.
+function calcMultipliers(relationsList) {
+    const result = {};
+    Object.keys(TYPE_COLORS).forEach(type => { result[type] = 1; });
+    for (const rel of relationsList) {
+        rel.double_damage_from.forEach(t => { if (t.name in result) result[t.name] *= 2; });
+        rel.half_damage_from.forEach(t => { if (t.name in result) result[t.name] *= 0.5; });
+        rel.no_damage_from.forEach(t => { if (t.name in result) result[t.name] *= 0; });
+    }
+    return result;
+}
+
+async function renderMatchups(types, id) {
+    const box = document.getElementById('matchups');
+    box.textContent = 'Loading matchups...';
+    try {
+        const relations = await Promise.all(types.map(getTypeRelations));
+        if (currentId !== id) return; // user already moved on
+        const multipliers = calcMultipliers(relations);
+        const groups = [
+            ['Weak to', v => v > 1],
+            ['Resists', v => v < 1 && v > 0],
+            ['Immune to', v => v === 0]
+        ];
+        box.replaceChildren();
+        for (const [title, test] of groups) {
+            const entries = Object.entries(multipliers)
+                .filter(([, v]) => test(v))
+                .sort((a, b) => b[1] - a[1]);
+            if (!entries.length) continue;
+            const heading = document.createElement('h2');
+            heading.textContent = title;
+            const row = document.createElement('div');
+            row.className = 'chips';
+            entries.forEach(([type, value]) => {
+                const chip = document.createElement('span');
+                chip.className = 'badge small';
+                chip.style.background = TYPE_COLORS[type];
+                chip.textContent = `${type} ×${value}`;
+                row.append(chip);
+            });
+            box.append(heading, row);
+        }
+    } catch {
+        if (currentId === id) box.textContent = 'Could not load type matchups.';
+    }
+}
+
+// Official artwork has no back view, so "Back view" switches to the pixel sprites.
+function showSprite() {
+    if (!currentData) return;
+    const sprites = currentData.sprites;
+    const frontKey = shiny ? 'front_shiny' : 'front_default';
+    const backKey = shiny ? 'back_shiny' : 'back_default';
+    const artwork = sprites.other['official-artwork'][frontKey] || sprites[frontKey] || sprites.front_default;
+    const pixelFront = sprites[frontKey] || artwork;
+    const useBack = back && Boolean(sprites[backKey]);
+    const usePixel = useBack || pixel; // back view is always pixel art
+
+    img.src = useBack ? sprites[backKey] : (pixel ? pixelFront : artwork);
+    img.alt = `${currentData.name}${shiny ? ' (shiny)' : ''}${useBack ? ', back view' : usePixel ? ', pixel art' : ''}`;
+    img.classList.toggle('pixel', usePixel);
+    shinyButton.setAttribute('aria-pressed', shiny);
+    pixelButton.setAttribute('aria-pressed', usePixel);
+    pixelButton.disabled = useBack; // already pixel art while back view is on
+    backButton.setAttribute('aria-pressed', back);
+    backButton.disabled = !sprites[backKey];
+}
+
+const speciesCache = new Map();
+
+async function renderEntry(id) {
+    const box = document.getElementById('entry');
+    box.textContent = '';
+    try {
+        if (!speciesCache.has(id)) {
+            const response = await fetch(`${API}/pokemon-species/${id}`);
+            if (!response.ok) return; // alternate forms have no species page
+            const species = await response.json();
+            const english = species.flavor_text_entries.filter(e => e.language.name === 'en');
+            const text = english.length ? english[english.length - 1].flavor_text : '';
+            speciesCache.set(id, text.replace(/[\n\f]/g, ' '));
+        }
+        if (currentId === id) box.textContent = speciesCache.get(id);
+    } catch {
+        // The entry is an extra; the card works without it.
+    }
+}
+
 function setBackground() {
     const pick = BACKGROUNDS[Math.floor(Math.random() * BACKGROUNDS.length)];
     const imageBox = document.querySelector('.card-img');
     imageBox.style.background = `url(${pick}.jpg) center / cover`;
 }
 
+const favButton = document.getElementById('favButton');
+const favBox = document.getElementById('favorites');
+
+function loadFavorites() {
+    try {
+        const stored = JSON.parse(localStorage.getItem('pokeFavorites'));
+        if (!Array.isArray(stored)) return [];
+        return stored.filter(f => f && Number.isInteger(f.id) && typeof f.name === 'string');
+    } catch {
+        return []; // storage blocked or data unreadable
+    }
+}
+
+function saveFavorites() {
+    try {
+        localStorage.setItem('pokeFavorites', JSON.stringify(favorites));
+    } catch {
+        // Saving can fail in private mode; favorites still work until the page closes.
+    }
+}
+
+let favorites = loadFavorites();
+
+function isFavorite(id) {
+    return favorites.some(f => f.id === id);
+}
+
+function toggleFavorite() {
+    if (!currentData) return;
+    if (isFavorite(currentData.id)) {
+        favorites = favorites.filter(f => f.id !== currentData.id);
+    } else {
+        favorites.push({ id: currentData.id, name: currentData.name, sprite: currentData.sprites.front_default });
+    }
+    saveFavorites();
+    renderFavorites();
+    updateStar();
+}
+
+function updateStar() {
+    const saved = Boolean(currentData) && isFavorite(currentData.id);
+    favButton.textContent = saved ? '★' : '☆';
+    favButton.setAttribute('aria-pressed', saved);
+    favButton.setAttribute('aria-label', saved ? 'Remove from favorites' : 'Add to favorites');
+}
+
+function renderFavorites() {
+    favBox.classList.toggle('hidden', favorites.length === 0);
+    favBox.replaceChildren(...favorites.map(f => {
+        const chip = document.createElement('button');
+        chip.type = 'button';
+        chip.className = 'fav-chip';
+        if (typeof f.sprite === 'string' && f.sprite.startsWith('https://')) {
+            const icon = document.createElement('img');
+            icon.src = f.sprite;
+            icon.alt = '';
+            chip.append(icon);
+        }
+        chip.append(f.name);
+        chip.addEventListener('click', () => {
+            input.value = f.name;
+            lookup(f.id);
+        });
+        return chip;
+    }));
+}
+
 function reset() {
     latestRequest++; // cancels any search still in flight
     currentId = null;
+    currentData = null;
+    document.body.classList.remove('has-type');
+    updateStar();
+    document.body.style.removeProperty('--accent');
     img.src = '';
     img.alt = '';
     container.classList.add('hidden');
@@ -162,6 +346,15 @@ form.addEventListener('submit', event => {
     lookup(input.value);
 });
 document.getElementById('removeButton').addEventListener('click', reset);
+shinyButton.addEventListener('click', () => { shiny = !shiny; showSprite(); });
+backButton.addEventListener('click', () => { back = !back; showSprite(); });
+pixelButton.addEventListener('click', () => { pixel = !pixel; showSprite(); });
+favButton.addEventListener('click', toggleFavorite);
+renderFavorites();
+document.getElementById('cryButton').addEventListener('click', () => {
+    const url = currentData?.cries?.latest;
+    if (url) new Audio(url).play().catch(() => showMessage('Could not play the cry.', true));
+});
 prevButton.addEventListener('click', () => {
     if (currentId > 1) { input.value = currentId - 1; lookup(currentId - 1); }
 });
