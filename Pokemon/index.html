@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pokémon</title>
+    <link rel="stylesheet" href="stil.css">
+    <script src="index.js" defer></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+</head>
+<body>
+    <div class="inputs">
+        <input type="text" id="pokeName" placeholder="Type Pokémon name">
+        <button id="fetchButton">Fetch Pokémon</button>
+        <button id="removeButton">Remove Pokémon</button>
+    </div> 
+    
+        <div class="container hidden">
+            <div class="card">
+                <div class="card-img">
+                    <img src="" alt="pokemon unknown" id="pokeimg" style="display: none;">
+                </div>
+                <div class="card-body">
+                    <h1 class="card-title" id="name" style="text-transform: capitalize"></h1>
+                    <p class="card-text" id="weight"></p>
+                    <p class="card-text" id="height"></p>
+                    <p class="card-text" id="exp"></p>
+                    <p class="card-text" id="order"></p>
+                </div>
+            </div>
+        </div>
+ 
+</body>
+</html>

@@ -1,0 +1,68 @@
+
+
+body{
+    font-family: 'Inter', sans-serif;
+    background-color:antiquewhite ;
+}
+.inputs {
+    position:absolute;
+}
+.card{
+    
+    display: flex;
+    flex-direction: column;
+    flex-basis: 300px;
+    flex-shrink: 0;
+    flex-grow: 0;
+    max-width: 100%;
+    background-color: aliceblue;
+    box-shadow: 0 5px 10px 0 rgba(0, 0, 0, 0.15);
+    border-radius: 10px;
+    overflow: hidden;
+    margin: 1rem;
+}
+
+.card-img {
+    overflow: hidden;
+    position:relative;
+}
+
+.card-body {
+    padding: 1.5rem;
+    position: relative;
+}
+
+.card-title {
+    font-size: 1.25rem;
+    line-height: 1.33;
+    font-weight: 700;
+}
+
+.card-intro{
+    margin-top: 0.75rem;
+    line-height: 1.5;
+}
+
+.container {
+    
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+#pokeimg {
+    width: 300px; /* Scale the image width to the container's width */  /* Limit the image width */
+    height: auto;  /* Maintain aspect ratio */
+    display: flex;/* Ensure it's displayed correctly */
+    margin: 0 auto;  /* Center it horizontally */
+    overflow: hidden;
+    object-fit:contain;
+}
+
+.hidden{
+    display: none !important;
+}
