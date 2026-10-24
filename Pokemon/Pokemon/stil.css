@@ -1,0 +1,169 @@
+body {
+    font-family: 'Inter', system-ui, sans-serif;
+    background-color: antiquewhite;
+    margin: 0;
+    padding: 1rem;
+}
+
+.inputs {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    justify-content: center;
+    margin-top: 0.5rem;
+}
+
+.inputs input {
+    flex: 1 1 220px;
+    max-width: 320px;
+    padding: 0.5rem 0.75rem;
+    border: 1px solid #b9a68c;
+    border-radius: 6px;
+    font: inherit;
+}
+
+button {
+    padding: 0.5rem 0.9rem;
+    border: none;
+    border-radius: 6px;
+    background: #3b3b4f;
+    color: white;
+    font: inherit;
+    cursor: pointer;
+}
+
+button:hover:not(:disabled) { background: #55556f; }
+button:disabled { opacity: 0.4; cursor: default; }
+button:focus-visible, input:focus-visible { outline: 3px solid #2f6fed; outline-offset: 2px; }
+
+#message {
+    min-height: 1.5rem;
+    text-align: center;
+    margin: 0.75rem 0 0;
+}
+#message.error { color: #a4161a; font-weight: 600; }
+
+.container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+.card {
+    --accent: #888;
+    display: flex;
+    flex-direction: row;
+    flex: 0 1 820px;
+    max-width: 100%;
+    background-color: aliceblue;
+    box-shadow: 0 5px 10px 0 rgba(0, 0, 0, 0.15);
+    border-radius: 10px;
+    border-top: 6px solid var(--accent);
+    overflow: hidden;
+    margin: 1rem;
+}
+
+.card-img { overflow: hidden; position: relative; }
+
+#pokeimg {
+    display: block;
+    width: 300px;
+    max-width: 100%;
+    height: auto;
+    margin: 0 auto;
+    object-fit: contain;
+}
+#pokeimg[src=""] { display: none; }
+
+.card-body { padding: 1.5rem; }
+
+.card-title {
+    font-size: 1.5rem;
+    line-height: 1.2;
+    font-weight: 700;
+    margin: 0;
+    text-transform: capitalize;
+}
+
+.card-number { margin: 0.25rem 0 0.75rem; color: #5b6475; }
+.card-text { margin: 0.25rem 0; }
+
+.types { display: flex; gap: 0.4rem; margin-bottom: 0.75rem; }
+
+.badge {
+    padding: 0.15rem 0.7rem;
+    border-radius: 999px;
+    color: #111;
+    font-size: 0.85rem;
+    font-weight: 600;
+    text-transform: capitalize;
+}
+
+.stats { margin-top: 1rem; display: grid; gap: 0.35rem; }
+
+.stat {
+    display: grid;
+    grid-template-columns: 4.5rem 1fr 2rem;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.9rem;
+}
+.stat-value { text-align: right; font-variant-numeric: tabular-nums; }
+
+.stat-bar { height: 8px; background: #d9e2ec; border-radius: 4px; overflow: hidden; }
+.stat-fill {
+    display: block;
+    height: 100%;
+    background: var(--accent);
+    transform-origin: left;
+    animation: grow 0.5s ease-out;
+}
+@keyframes grow { from { transform: scaleX(0); } }
+
+.browse { display: flex; justify-content: space-between; margin-top: 1.25rem; }
+
+.hidden { display: none !important; }
+
+@media (prefers-reduced-motion: reduce) {
+    .stat-fill { animation: none; }
+}
+
+.matchups { margin-top: 1.25rem; font-size: 0.9rem; }
+.matchups h2 { font-size: 1rem; margin: 0.9rem 0 0.4rem; }
+.chips { display: flex; flex-wrap: wrap; gap: 0.35rem; }
+.badge.small { padding: 0.1rem 0.55rem; font-size: 0.8rem; }
+
+.card-left {
+    flex: 0 0 300px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding-bottom: 1rem;
+    background: #eef3f8;
+}
+.card-left .card-img { width: 100%; }
+.card-body { flex: 1; min-width: 0; }
+
+.sprite-controls {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 0.4rem;
+    margin: 0.75rem 0.75rem 0;
+}
+.card-left .browse { width: calc(100% - 1.5rem); margin-top: 0.75rem; }
+
+button.secondary { background: #e2e8f0; color: #1f2937; }
+button.secondary:hover:not(:disabled) { background: #cbd5e1; }
+button.secondary[aria-pressed="true"],
+button.secondary[aria-pressed="true"]:hover:not(:disabled) { background: #3b3b4f; color: #fff; }
+
+#pokeimg.pixel { image-rendering: pixelated; }
+.entry { font-style: italic; margin: 0 0 0.75rem; line-height: 1.4; color: #374151; }
+.entry:empty { display: none; }
+
+@media (max-width: 720px) {
+    .card { flex-direction: column; }
+    .card-left { flex-basis: auto; }
+}

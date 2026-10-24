@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pokémon</title>
+    <link rel="stylesheet" href="stil.css">
+    <script src="index.js" defer></script>
+</head>
+<body>
+    <form class="inputs" id="searchForm" autocomplete="off">
+        <input type="text" id="pokeName" list="pokeList" placeholder="Name or number, e.g. pikachu or 25" aria-label="Pokémon name or number">
+        <datalist id="pokeList"></datalist>
+        <button type="submit" id="fetchButton">Fetch Pokémon</button>
+        <button type="button" id="removeButton">Remove Pokémon</button>
+    </form>
+
+    <p id="message" role="status" aria-live="polite"></p>
+
+    <div class="container hidden">
+        <div class="card" id="card">
+            <div class="card-left">
+                <div class="card-img">
+                    <img src="" alt="" id="pokeimg">
+                </div>
+                <div class="sprite-controls">
+                    <button type="button" class="secondary" id="shinyButton" aria-pressed="false">Shiny</button>
+                    <button type="button" class="secondary" id="backButton" aria-pressed="false">Back view</button>
+                    <button type="button" class="secondary" id="cryButton">Play cry</button>
+                </div>
+                <div class="browse">
+                    <button type="button" class="secondary" id="prevButton">Previous</button>
+                    <button type="button" class="secondary" id="nextButton">Next</button>
+                </div>
+            </div>
+            <div class="card-body">
+                <h1 class="card-title" id="name"></h1>
+                <p class="card-number" id="number"></p>
+                <div class="types" id="types"></div>
+                <p class="entry" id="entry"></p>
+                <p class="card-text" id="weight"></p>
+                <p class="card-text" id="height"></p>
+                <p class="card-text" id="exp"></p>
+                <p class="card-text" id="abilities"></p>
+                <div class="stats" id="stats"></div>
+                <div class="matchups" id="matchups"></div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
