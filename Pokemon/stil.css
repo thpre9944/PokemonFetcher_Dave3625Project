@@ -1,68 +1,130 @@
-
-
-body{
-    font-family: 'Inter', sans-serif;
-    background-color:antiquewhite ;
+body {
+    font-family: 'Inter', system-ui, sans-serif;
+    background-color: antiquewhite;
+    margin: 0;
+    padding: 1rem;
 }
+
 .inputs {
-    position:absolute;
-}
-.card{
-    
     display: flex;
-    flex-direction: column;
-    flex-basis: 300px;
-    flex-shrink: 0;
-    flex-grow: 0;
-    max-width: 100%;
-    background-color: aliceblue;
-    box-shadow: 0 5px 10px 0 rgba(0, 0, 0, 0.15);
-    border-radius: 10px;
-    overflow: hidden;
-    margin: 1rem;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    justify-content: center;
+    margin-top: 0.5rem;
 }
 
-.card-img {
-    overflow: hidden;
-    position:relative;
+.inputs input {
+    flex: 1 1 220px;
+    max-width: 320px;
+    padding: 0.5rem 0.75rem;
+    border: 1px solid #b9a68c;
+    border-radius: 6px;
+    font: inherit;
 }
 
-.card-body {
-    padding: 1.5rem;
-    position: relative;
+button {
+    padding: 0.5rem 0.9rem;
+    border: none;
+    border-radius: 6px;
+    background: #3b3b4f;
+    color: white;
+    font: inherit;
+    cursor: pointer;
 }
 
-.card-title {
-    font-size: 1.25rem;
-    line-height: 1.33;
-    font-weight: 700;
-}
+button:hover:not(:disabled) { background: #55556f; }
+button:disabled { opacity: 0.4; cursor: default; }
+button:focus-visible, input:focus-visible { outline: 3px solid #2f6fed; outline-offset: 2px; }
 
-.card-intro{
-    margin-top: 0.75rem;
-    line-height: 1.5;
+#message {
+    min-height: 1.5rem;
+    text-align: center;
+    margin: 0.75rem 0 0;
 }
+#message.error { color: #a4161a; font-weight: 600; }
 
 .container {
-    
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
     display: flex;
     align-items: center;
     justify-content: center;
     flex-wrap: wrap;
 }
-#pokeimg {
-    width: 300px; /* Scale the image width to the container's width */  /* Limit the image width */
-    height: auto;  /* Maintain aspect ratio */
-    display: flex;/* Ensure it's displayed correctly */
-    margin: 0 auto;  /* Center it horizontally */
+
+.card {
+    --accent: #888;
+    display: flex;
+    flex-direction: column;
+    flex: 0 0 320px;
+    max-width: 100%;
+    background-color: aliceblue;
+    box-shadow: 0 5px 10px 0 rgba(0, 0, 0, 0.15);
+    border-radius: 10px;
+    border-top: 6px solid var(--accent);
     overflow: hidden;
-    object-fit:contain;
+    margin: 1rem;
 }
 
-.hidden{
-    display: none !important;
+.card-img { overflow: hidden; position: relative; }
+
+#pokeimg {
+    display: block;
+    width: 300px;
+    max-width: 100%;
+    height: auto;
+    margin: 0 auto;
+    object-fit: contain;
+}
+#pokeimg[src=""] { display: none; }
+
+.card-body { padding: 1.5rem; }
+
+.card-title {
+    font-size: 1.5rem;
+    line-height: 1.2;
+    font-weight: 700;
+    margin: 0;
+    text-transform: capitalize;
+}
+
+.card-number { margin: 0.25rem 0 0.75rem; color: #5b6475; }
+.card-text { margin: 0.25rem 0; }
+
+.types { display: flex; gap: 0.4rem; margin-bottom: 0.75rem; }
+
+.badge {
+    padding: 0.15rem 0.7rem;
+    border-radius: 999px;
+    color: #111;
+    font-size: 0.85rem;
+    font-weight: 600;
+    text-transform: capitalize;
+}
+
+.stats { margin-top: 1rem; display: grid; gap: 0.35rem; }
+
+.stat {
+    display: grid;
+    grid-template-columns: 4.5rem 1fr 2rem;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.9rem;
+}
+.stat-value { text-align: right; font-variant-numeric: tabular-nums; }
+
+.stat-bar { height: 8px; background: #d9e2ec; border-radius: 4px; overflow: hidden; }
+.stat-fill {
+    display: block;
+    height: 100%;
+    background: var(--accent);
+    transform-origin: left;
+    animation: grow 0.5s ease-out;
+}
+@keyframes grow { from { transform: scaleX(0); } }
+
+.browse { display: flex; justify-content: space-between; margin-top: 1.25rem; }
+
+.hidden { display: none !important; }
+
+@media (prefers-reduced-motion: reduce) {
+    .stat-fill { animation: none; }
 }
