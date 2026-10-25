@@ -1,4 +1,5 @@
 # PokemonFetcher_Dave3625Project
+The purpose of this project is to search and learn about different pokemóns. See their stats and evolutions. And enjoy the beautiful artwork.
 I created an Pokemón api fetcher that displays stats and sprites when a name is searched. I started this project my self in 2024 and used Claud to help finish and polish. I first made the api fetching and display of the pokemón sprite and name my self in 2024. I picked this project up again with the help of claud. 
 With claud we added:
 - favorites, can add pokemóns to a favorites list.
