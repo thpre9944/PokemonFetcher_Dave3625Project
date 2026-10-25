@@ -14,3 +14,4 @@ Reason i chose this project is because many of my friends like pokemón. I am no
 For me this solves a problem of feeling included in something my friends enjoy.
 
 Link to youtube video: https://youtu.be/i4PdfJUJSsM
+Link to Pokemón API website: https://pokeapi.co/api/v2
